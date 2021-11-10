@@ -45,6 +45,7 @@ if [ "-${gitTag}-" == "--" ]; then
     # define git tag as <branch>-<latest commit>
     gitTag="$(git branch --show-current)-$(git rev-parse HEAD)"
 else
+    # check out on the specific commit or tag
     git checkout ${gitTag}
 fi
 

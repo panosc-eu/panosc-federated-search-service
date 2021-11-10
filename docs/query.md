@@ -23,6 +23,7 @@ The query syntax is based on the [Loopback query filter](https://loopback.io/doc
       2. [Include with match conditions](#include-with-match-conditions)
    3. [Limit filter](#limit-filter)
    4. [Skip filter](#skip-filter)
+   5. [Query filter](#query-filter)
 2. [Examples](#examples)
 
 ---
@@ -212,8 +213,24 @@ It is not necessary to include this filter if the value is 0.
 
 ---
 
+### Query filter
+
+Results can be scored accordingly to the relevancy to the key words listed in the query operator.
+Scoring must be perfoermed according to the techniques illustrated in the *panosc search scoring* repository.
+Each result is scored according to the query provided, than are ordered from the highest score to the lowest.
+If the limit filter is specified, only the first *n* are returned.
+
+```json
+{"query":"keyword-1 keyword-2 ..."}
+```
+
+
 ## Examples
 
-- [Dataset Queries](./dataset-example-queries.md)
-- [Document Queries](./document-example-queries.md)
+- Dataset Queries
+  - [Local data sources](./dataset-example-queries-local-data-sources.md)
+  - [Remote data sources](./dataset-example-queries-remote-data-sources.md)
+- Document Queries
+  - [Local data sources](./document-example-queries-local-data-sources.md)
+  - [Remote data sources](./document-example-queries-remote-data-sources.md)
 - [Instrument Queries](./instrument-example-queries.md)
