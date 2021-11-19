@@ -33,8 +33,8 @@ The queries can be run through the explorer interface or directly on the API pas
      - [Local data sources](./docs/dataset-example-queries-local-data-sources.md)
      - [Remote data sources](./docs/dataset-example-queries-remote-data-sources.md)
    - Document Example Queries
-     - [Local data source](./docs/document-example-queries-local-data-source.md)
-     - [Remote data source](./docs/document-example-queries-remote-data-source.md)
+     - [Local data source](./docs/document-example-queries-local-data-sources.md)
+     - [Remote data source](./docs/document-example-queries-remote-data-sources.md)
    - [Instrument Example Queries](./docs/instrument-example-queries.md)
 
 ## Create docker image
