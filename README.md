@@ -114,7 +114,7 @@ Please follow the steps listed below and, on step 2, select which configuration 
       curl -X GET --header "Accept: application/json" "http://localhost:3000/api/Datasets"
       ```
 
-   - Get all of Datasets where the title contains "provider 1"
+   - Get all of Datasets where the title contains "provider 1"  
      Filter: {"where":{"title":{"like":"provider 1"}}}
 
       ```bash
@@ -133,14 +133,14 @@ Please follow the steps listed below and, on step 2, select which configuration 
       curl -X GET --header "Accept: application/json" "http://localhost:3000/api/Datasets/count"
       ```
 
-   - Get the count of Datasets where the title contains "provider 1"
+   - Get the count of Datasets where the title contains "provider 1"  
      Filter:  {"title":{"like":"provider 1"}}) (Like in example #2)
 
       ```bash
       curl -X GET --header "Accept: application/json" "http://localhost:3000/api/Datasets/count?where=%7B%22title%22%3A%7B%22like%22%3A%22Provider%201%22%7D%7D"
       ```
-
-   - Retrieve the 10 Datasets most relevant to the keywords "temperature" and "beam"
+ 
+   - Retrieve the 10 Datasets most relevant to the keywords "temperature" and "beam"  
      Filter: {"limit": 10, "query": "temperature beam"}
 
      ```bash
