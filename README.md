@@ -104,8 +104,8 @@ Please follow the steps listed below and, on step 2, select which configuration 
       docker-compose -f ./test/docker-compose-live-data-provider-test.yaml up --build
       ```
 
-3. Try out the API using the example queries provided in the documents listed above in the section *Example queries*, either through http://localhost:3000/explorer or Curl.
-   For the impatients, please check the few quick curl commands listed below.
+3. Try out the API using the example queries provided in the documents listed above in the section *Example queries*, either through http://localhost:3000/explorer or Curl.  
+   For the impatients, please check the few quick curl commands listed below.  
    **IMPORTANT**: at the moment, the query keyword in filter provides meaningful results only on the test with live data providers.
 
    - Get all of Datasets
