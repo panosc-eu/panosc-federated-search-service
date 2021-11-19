@@ -5,11 +5,11 @@
 
 
 ## Contents
-1. [Query datasets acquired using X-Ray Absorption](#query-datasets-acquired-using-x-ray-absorption)
-2. [Query datasets where the photon energy range is 880-990 eV](#query-datasets-where-the-photon-energy-range-is-880-990-ev)
-3. [Query datasets with a solid sample containing copper](#query-datasets-with-a-solid-sample-containing-copper)
-4. [Query datasets where temperature is below 80°C](#query-datasets-where-temperature-is-below-80c)
-5. [Query datasets with files matching a string using full text search](#query-datasets-with-files-matching-a-string-using-full-text-search)
+1. [Query datasets acquired using X-Ray Absorption](#1-query-datasets-acquired-using-x-ray-absorption)
+2. [Query datasets where the photon energy range is 880-990 eV](#2-query-datasets-where-the-photon-energy-range-is-880-990-ev)
+3. [Query datasets with a solid sample containing copper](#3-query-datasets-with-a-solid-sample-containing-copper)
+4. [Query datasets where temperature is below 80°C](#4-query-datasets-where-temperature-is-below-80c)
+5. [Query datasets with files matching a string using full text search](#5-query-datasets-with-files-matching-a-string-using-full-text-search)
 
 
 ## Examples with local data sources

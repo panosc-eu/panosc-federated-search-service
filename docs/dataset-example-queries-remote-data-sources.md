@@ -6,9 +6,9 @@ This examples can be used to test the production deployment of PaNOSC federated 
 
 
 ## Contents
-1. [Query datasets where title contains the word data, retrieve 10](#query-datasets-where-title-contains-the-word-data-retrieve-10)
-2. [Query datasets relevant to "data beam", retrieve only 10 best results](#query-datasets-relevant-to-data-beam-retrieve-only-10-best-results)
-3. [Query datasets relevant to "temperature beam", retrieve only 10 best results](#query-datasets-relevant-to-temperature-beam-retrieve-only-10-best-results)
+1. [Query datasets where title contains the word data, retrieve 10](#1-query-datasets-where-title-contains-the-word-data-retrieve-10)
+2. [Query datasets relevant to "data beam", retrieve only 10 best results](#2-query-datasets-relevant-to-data-beam-retrieve-only-10-best-results)
+3. [Query datasets relevant to "temperature beam", retrieve only 10 best results](#3-query-datasets-relevant-to-temperature-beam-retrieve-only-10-best-results)
 
 
 ## Examples with remote data sources

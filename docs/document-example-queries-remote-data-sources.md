@@ -5,9 +5,9 @@ This examples can be used to test the production deployment of PaNOSC federated 
 `GET /documents`
 
 ## Contents
-1. [Query documents where title contains the word data, retrieve 10](#query-documents-where-title-contains-the-word-data-retrieve-10)
-2. [Query documents relevant to "data beam", retrieve only 10 best results](#query-documents-relevant-to-data-beam-retrieve-only-10-best-results)
-3. [Query documents relevant to "temperature beam", retrieve only 10 best results](#query-documents-relevant-to-temperature-beam-retrieve-only-10-best-results)
+1. [Query documents where title contains the word data, retrieve 10](#1-query-documents-where-title-contains-the-word-data-retrieve-10)
+2. [Query documents relevant to "data beam", retrieve only 10 best results](#2-query-documents-relevant-to-data-beam-retrieve-only-10-best-results)
+3. [Query documents relevant to "temperature beam", retrieve only 10 best results](#3-query-documents-relevant-to-temperature-beam-retrieve-only-10-best-results)
 
 ## Examples with remote data sources
 

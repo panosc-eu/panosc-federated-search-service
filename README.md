@@ -32,7 +32,9 @@ The queries can be run through the explorer interface or directly on the API pas
    - Dataset Example Queries
      - [Local data sources](./docs/dataset-example-queries-local-data-sources.md)
      - [Remote data sources](./docs/dataset-example-queries-remote-data-sources.md)
-   - [Document Example Queries](./docs/document-example-queries.md)
+   - Document Example Queries
+     - [Local data source](./docs/document-example-queries-local-data-source.md)
+     - [Remote data source](./docs/document-example-queries-remote-data-source.md)
    - [Instrument Example Queries](./docs/instrument-example-queries.md)
 
 ## Create docker image
@@ -70,7 +72,10 @@ If you want to create a docker image with the most recent commit present in your
 docker-image-relesase.sh <your-docker-account>
 ```
 
-Assuming that you are currently in branch develop and on commit 5d5f42af1ca6816a13b6db60b4778388dc4bf431, a docker image with tag *develop-5d5f42af1ca6816a13b6db60b4778388dc4bf431* will be pushed on the docker repository
+Assuming that you are currently in branch develop and on commit 5d5f42af1ca6816a13b6db60b4778388dc4bf431, a docker image with tag *develop-5d5f42af1ca6816a13b6db60b4778388dc4bf431* will be pushed on the docker repository.
+
+### Docker images repository
+The current repository for the docker images is: *nitrosx/panosc-federated-search* and can be found at this [URL](https://hub.docker.com/repository/docker/nitrosx71/panosc-federated-search/general)
 
 
 ## How to test the PaNOSC federated search api
@@ -101,9 +106,10 @@ Please follow the steps listed below and, on step 2, select which configuration 
 
 3. Try out the API using the example queries provided in the documents listed above in the section *Example queries*, either through http://localhost:3000/explorer or Curl.
    For the impatients, please check the few quick curl commands listed below.
-   **IMPORTANT**: at the moment, the querry filter provides meaningful results only on the test with live data providers.
+   **IMPORTANT**: at the moment, the query keyword in filter provides meaningful results only on the test with live data providers.
 
    - Get all of Datasets
+
       ```bash
       curl -X GET --header "Accept: application/json" "http://localhost:3000/api/Datasets"
       ```
@@ -128,11 +134,18 @@ Please follow the steps listed below and, on step 2, select which configuration 
       ```
 
    - Get the count of Datasets where the title contains "provider 1"
-     Filter:  in the second command: {"title":{"like":"provider 1"}})
+     Filter:  {"title":{"like":"provider 1"}}) (Like in example #2)
 
       ```bash
       curl -X GET --header "Accept: application/json" "http://localhost:3000/api/Datasets/count?where=%7B%22title%22%3A%7B%22like%22%3A%22Provider%201%22%7D%7D"
       ```
+
+   - Retrieve the 10 Datasets most relevant to the keywords "temperature" and "beam"
+     Filter: {"limit": 10, "query": "temperature beam"}
+
+     ```bash
+     curl -X GET --header "Accept: application/json" "http://localhost:3000/api/Documents?filter=%7B%22limit%22%3A10%2C%22query%22%3A%22temperature%20beam%22%7D"
+     ```
 
 ## Customization
 
