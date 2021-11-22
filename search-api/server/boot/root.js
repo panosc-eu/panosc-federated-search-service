@@ -14,6 +14,7 @@ module.exports = function (server) {
     const docker_image_version = process.env.DOCKER_IMAGE_VERSION || "unknown";
     const hosting_facility = process.env.HOSTING_FACILITY || "unknown";
     const environment = process.env.ENVIRONMENT || "unknown";
+    const data_providers = process.env.PROVIDERS.split(',') || ["unknown"];
 
 
     function format(seconds) {
@@ -35,7 +36,8 @@ module.exports = function (server) {
       'api_version': api_version,
       'docker_image_version': docker_image_version,
       'hosting_facility': hosting_facility,
-      'environment': environment
+      'environment': environment,
+      'data_providers': data_providers
     };
 
     res.send(response_string);
