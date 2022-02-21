@@ -140,7 +140,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
 
     // check if filter contains limit
     //console.log('remoteMethodProxy:args : ' + JSON.stringify(args));
-    let limit = -1;
+    let limit =  parseInt(process.env.DEFAULT_LIMIT || "100");;
     args.map(i => {
       if (typeof i != "undefined" && 'limit' in i) {
         limit = i.limit;
@@ -204,7 +204,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     }
     // we aggregate all the results returned by all the facilities
     Promise.all(data).then(function (results) {
-      //console.log('remoteMethodProxy:results : ' + JSON.stringify(results));
+      console.log('remoteMethodProxy:results : ' + JSON.stringify(results));
       Aggregator(results, remoteMethod.name, callback, limit);
     });
 

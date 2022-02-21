@@ -23,6 +23,44 @@ As November 2021, the production environment is accessible at the following URL:
    - Explorer interface: https://federated.scicat.ess.eu/explorer/
    - Api : https://federated.scicat.ess.eu/api/
 
+## Configuration
+PaNOSC federated search can be configured by setting environmental variables.
+Following is the list of the available configurations, their meaning and default value:
+- API_VERSION           : API version used in the running instance.
+                          Default: unknown
+- DOCKER_IMAGE_VERSION  : tag of the docker image used for the running instance, if any.
+                          Default: unknown
+- HOSTING_FACILITY      : name of the hosting facility for the running instance.
+                          Default: unknown
+- ENVIRONMENT           : string identifying the environemnt where the instance is running.
+                          Example: develop, test, or production.
+                          Default: unknown
+- PROVIDERS             : comma separated list of facilities PaNOSC local search apis that are used when running queries.
+                          Example: "https://icatplus.esrf.fr/api,https://scicat.ess.eu/panosc-api,https://fairdata.ill.fr/fairdata/api"
+                          Default: unknown
+- DEFAULT_LIMIT         : number of results returned from each facility if no limit is provided in filter.
+                          Example: if set to 10. When no limit is provided in filter, the federated search will return 10 results from each facility.
+                          Default: 100
+
+All of this values can be verified by connecting to the base URL of the PaNOSC federated search instance that we would like to check.
+For example, the ESS PaNOSC federated search instance returns the following values:
+
+> curl https://federated.scicat.ess.eu/
+{
+   "uptime_seconds" : 426443.573,
+   "uptime" : "118:27:23",
+   "api_version" : "v2.2",
+   "docker_image_version" : "v2.2",
+   "hosting_facility" : "ESS",
+   "environment" : "production",
+   "data_providers" : [
+      "https://icatplus.esrf.fr/api",
+      "https://scicat.ess.eu/panosc-api",
+      "https://fairdata.ill.fr/fairdata/api"
+   ],
+   "default_limit": : 100
+}
+
 ## Example queries
 
 Try out the API using the example queries included in the pages below.
@@ -104,8 +142,8 @@ Please follow the steps listed below and, on step 2, select which configuration 
       docker-compose -f ./test/docker-compose-live-data-provider-test.yaml up --build
       ```
 
-3. Try out the API using the example queries provided in the documents listed above in the section *Example queries*, either through http://localhost:3000/explorer or Curl.  
-   For the impatients, please check the few quick curl commands listed below.  
+3. Try out the API using the example queries provided in the documents listed above in the section *Example queries*, either through http://localhost:3000/explorer or Curl.
+   For the impatients, please check the few quick curl commands listed below.
    **IMPORTANT**: at the moment, the query keyword in filter provides meaningful results only on the test with live data providers.
 
    - Get all of Datasets
@@ -114,7 +152,7 @@ Please follow the steps listed below and, on step 2, select which configuration 
       curl -X GET --header "Accept: application/json" "http://localhost:3000/api/Datasets"
       ```
 
-   - Get all of Datasets where the title contains "provider 1"  
+   - Get all of Datasets where the title contains "provider 1"
      Filter: {"where":{"title":{"like":"provider 1"}}}
 
       ```bash
@@ -133,14 +171,14 @@ Please follow the steps listed below and, on step 2, select which configuration 
       curl -X GET --header "Accept: application/json" "http://localhost:3000/api/Datasets/count"
       ```
 
-   - Get the count of Datasets where the title contains "provider 1"  
+   - Get the count of Datasets where the title contains "provider 1"
      Filter:  {"title":{"like":"provider 1"}}) (Like in example #2)
 
       ```bash
       curl -X GET --header "Accept: application/json" "http://localhost:3000/api/Datasets/count?where=%7B%22title%22%3A%7B%22like%22%3A%22Provider%201%22%7D%7D"
       ```
- 
-   - Retrieve the 10 Datasets most relevant to the keywords "temperature" and "beam"  
+
+   - Retrieve the 10 Datasets most relevant to the keywords "temperature" and "beam"
      Filter: {"limit": 10, "query": "temperature beam"}
 
      ```bash

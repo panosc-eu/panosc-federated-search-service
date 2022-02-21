@@ -15,6 +15,7 @@ module.exports = function (server) {
     const hosting_facility = process.env.HOSTING_FACILITY || "unknown";
     const environment = process.env.ENVIRONMENT || "unknown";
     const data_providers = process.env.PROVIDERS.split(',') || ["unknown"];
+    const default_limit = parseInt(process.env.DEFAULT_LIMIT || "100");
 
 
     function format(seconds) {
@@ -37,7 +38,8 @@ module.exports = function (server) {
       'docker_image_version': docker_image_version,
       'hosting_facility': hosting_facility,
       'environment': environment,
-      'data_providers': data_providers
+      'data_providers': data_providers,
+      'default_limit' : default_limit
     };
 
     res.send(response_string);
