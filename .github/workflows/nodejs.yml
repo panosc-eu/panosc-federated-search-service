@@ -18,6 +18,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: npm install and test
         run: |
+          cd search-api
+          npm install
           npm ci
           npm test
         env:
