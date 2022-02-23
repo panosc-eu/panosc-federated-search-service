@@ -2,7 +2,7 @@ version: '3.0'
 services:
 
   test-search-api:
-    name: test-search-api
+    container_name: test-search-api
     build: ../search-api
     ports:
       - "3000:3000"
@@ -16,7 +16,7 @@ services:
     restart: "no"
 
   test-provider-01:
-    name: test-provider-01
+    container_name: test-provider-01
     build: ../search-api-data-provider
     ports:
       - "3001:3000"
@@ -26,7 +26,7 @@ services:
     restart: "no"
 
   test-provider-02:
-    name: test-provider-02
+    container_name: test-provider-02
     build: ../search-api-data-provider
     ports:
       - "3002:3000"
