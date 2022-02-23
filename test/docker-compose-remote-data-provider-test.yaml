@@ -6,6 +6,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      PROVIDERS: "https://icatplus.esrf.fr/api,https://scicat.ess.eu/panosc-api,https://fairdata.ill.fr/fairdata/api"
+      PROVIDERS             : "https://icatplus.esrf.fr/api,https://scicat.ess.eu/panosc-api,https://fairdata.ill.fr/fairdata/api"
+      API_VERSION           : "Current git commit"
+      DOCKER_IMAGE_VERSION  : "Current git commit"
+      HOSTING_FACILITY      : "Local Host"
+      ENVIRONMENT           : "Local instance with remote data providers"
+      DEFAULT_LIMIT         : "10"
     restart: "no"
 
