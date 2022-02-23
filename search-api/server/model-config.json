@@ -47,11 +47,11 @@
   },
   "Technique": {
     "dataSource": "DistributedService",
-    "public": true
+    "public": false
   },
   "Parameter": {
     "dataSource": "DistributedService",
-    "public": true
+    "public": false
   },
   "File": {
     "dataSource": "db",

@@ -13,7 +13,6 @@ jobs:
       - uses: actions/checkout@v1
       - name: Build the docker-compose stack
         run: |
-<<<<<<< HEAD
           cd test
           docker-compose -f docker-compose-local-data-provider-test.yml up -d
       - name: Check running containers
@@ -24,12 +23,3 @@ jobs:
         run: docker exec test-search-api wget "http://localhost:3000"
       - name: Run test suite
         run: echo "Tests are fine!!! Everything is fine!!!"
-=======
-          cd search-api
-          npm install
-          npm install mocha
-          npm ci
-          npm test
-        env:
-          CI: true
->>>>>>> 37e7c61af17e93dd46ba16c10c76f82060a34ef6
