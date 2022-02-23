@@ -2,6 +2,7 @@ version: '3.0'
 services:
 
   test-search-api:
+    name: test-search-api
     build: ../search-api
     ports:
       - "3000:3000"

@@ -14,11 +14,11 @@ jobs:
       - name: Build the docker-compose stack
         run: |
           cd test
-          docker-compose -f docker-compose-local-data-provider-test.ci.yaml up -d
+          docker-compose -f docker-compose-local-data-provider-testCI docker compo.ci.yaml up -d
       - name: Check running containers
         run: docker ps -a
       - name: Check logs
-        run: docker logs test_search-api
+        run: docker logs test-search-api
       - name: Check PaNOSC federated search configuration
         run: docker exec test_search-api wget "http://localhost:3000"
       - name: Run test suite

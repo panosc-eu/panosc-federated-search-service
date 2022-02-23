@@ -1,7 +1,8 @@
 version: '3.0'
 services:
 
-  search-api:
+  test-search-api:
+    name: test-search-api
     build: ../search-api
     ports:
       - "3000:3000"
@@ -14,7 +15,8 @@ services:
       DEFAULT_LIMIT         : "10"
     restart: "no"
 
-  provider-01:
+  test-provider-01:
+    name: test-provider-01
     build: ../search-api-data-provider
     ports:
       - "3001:3000"
@@ -23,7 +25,8 @@ services:
       - ../test/provider_datasource.json:/home/node/app/server/datasources.json
     restart: "no"
 
-  provider-02:
+  test-provider-02:
+    name: test-provider-02
     build: ../search-api-data-provider
     ports:
       - "3002:3000"
