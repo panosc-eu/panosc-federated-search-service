@@ -58,6 +58,7 @@ function Aggregator(results, method, callback, limit = -1) {
     //console.log('aggregator:Aggregator other 1');
     let mergedResults = new Array();
     for (let result of results) {
+      console.log('aggregator:Aggregator ' + result.length);
       if (result != null) {
         mergedResults = mergedResults.concat(result);
       }

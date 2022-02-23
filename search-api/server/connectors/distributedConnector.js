@@ -156,11 +156,20 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     if (remoteMethod.isStatic) {
       data = remotes.map(async remote => {
         //console.log('remoteMethodProxy:remote static :' + remote.url);
+        //let remoteArgs = [...args];
         let remoteArgs = Array.prototype.slice.call(arguments);
         const lastArgIsFunc = typeof args[args.length - 1] === 'function';
         if (lastArgIsFunc) {
           remoteArgs.pop();
         }
+        remoteArgs = remoteArgs.map(i => {
+          if (typeof i != "undefined" && 'limit' in i) {
+            i.limit = limit / remotes.length;
+          } else if ( typeof i == "undefined" ) {
+            i = {limit: limit / remotes.length};
+          }
+          return i;
+        });
         remoteArgs = remoteArgs.map(r => { return (typeof r == 'string') ? encodeURIComponent(r) : r });
         //console.log('remoteMethodProxy:remoteArgs : ' + JSON.stringify(remoteArgs));
         //console.log('remoteMethodProxy:method : ' + remoteMethod.stringName);
@@ -182,11 +191,11 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     } else {
       data = remotes.map(async remote => {
         const ctorArgs = [encodeURIComponent(this.id)];
-        const remoteArgs = Array.prototype.slice.call(arguments);
-        const lastArgIsFunc = typeof args[args.length - 1] === 'function';
-        if (lastArgIsFunc) {
-          remoteArgs.pop();
-        }
+        //const remoteArgs = Array.prototype.slice.call(arguments);
+        //const lastArgIsFunc = typeof args[args.length - 1] === 'function';
+        //if (lastArgIsFunc) {
+        //  remoteArgs.pop();
+        //}
         return await new Promise((resolve, reject) => {
           remote['remote'].invoke(remoteMethod.stringName, ctorArgs, remoteArgs, function (err, result) {
             if (err != null) {
@@ -204,7 +213,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     }
     // we aggregate all the results returned by all the facilities
     Promise.all(data).then(function (results) {
-      console.log('remoteMethodProxy:results : ' + JSON.stringify(results));
+      console.log('remoteMethodProxy:results : ' + JSON.stringify(results.length));
       Aggregator(results, remoteMethod.name, callback, limit);
     });
 
