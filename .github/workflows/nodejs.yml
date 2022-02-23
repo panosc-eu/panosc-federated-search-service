@@ -20,6 +20,6 @@ jobs:
       - name: Check logs
         run: docker logs test-search-api
       - name: Check PaNOSC federated search configuration
-        run: docker exec test_search-api wget "http://localhost:3000"
+        run: docker exec test-search-api wget "http://localhost:3000"
       - name: Run test suite
         run: echo "Tests are fine!!! Everything is fine!!!"
