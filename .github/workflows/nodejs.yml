@@ -21,6 +21,7 @@ jobs:
         run: |
           cd search-api
           npm install
+          npm install mocha
           npm ci
           npm test
         env:
