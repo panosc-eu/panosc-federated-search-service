@@ -14,7 +14,7 @@ jobs:
       - name: Build the docker-compose stack
         run: |
           cd test
-          docker-compose -f docker-compose-local-data-provider-testCI docker compo.ci.yaml up -d
+          docker-compose -f docker-compose-local-data-provider-test.ci.yaml up -d
       - name: Check running containers
         run: docker ps -a
       - name: Check logs
