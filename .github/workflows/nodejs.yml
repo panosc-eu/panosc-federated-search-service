@@ -16,6 +16,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+          mocha: true
       - name: npm install and test
         run: |
           cd search-api
