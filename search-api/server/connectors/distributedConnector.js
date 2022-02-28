@@ -14,6 +14,8 @@ const Aggregator = require('../aggregator');
 
 const findMethodNames = ['findById', 'findOne'];
 
+const limitMethodsString = ['Dataset.find', 'Document.find', 'Instrument.find' ];
+
 module.exports = DistributedConnector;
 
 /**
@@ -142,7 +144,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     //console.log('remoteMethodProxy:args : ' + JSON.stringify(args));
     let limit =  parseInt(process.env.DEFAULT_LIMIT || "100");;
     args.map(i => {
-      if (typeof i != "undefined" && 'limit' in i) {
+      if (typeof i != "string" && typeof i != "undefined" && 'limit' in i) {
         limit = i.limit;
       }
     });
@@ -158,33 +160,48 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         //console.log('remoteMethodProxy:remote static :' + remote.url);
         //let remoteArgs = [...args];
         let remoteArgs = Array.prototype.slice.call(arguments);
-        const lastArgIsFunc = typeof args[args.length - 1] === 'function';
+        const lastArgIsFunc = typeof remoteArgs[remoteArgs.length - 1] === 'function';
         if (lastArgIsFunc) {
           remoteArgs.pop();
         }
-        remoteArgs = remoteArgs.map(i => {
-          if (typeof i != "undefined" && 'limit' in i) {
-            i.limit = limit / remotes.length;
-          } else if ( typeof i == "undefined" ) {
-            i = {limit: limit / remotes.length};
-          }
-          return i;
-        });
+        if (limitMethodsString.includes(remoteMethod.stringName)) {
+          remoteArgs = remoteArgs.map(i => {
+            if (typeof i != "string" && typeof i != "undefined" && 'limit' in i) {
+              i.limit = limit / remotes.length;
+            } else if ( typeof i == "undefined" ) {
+              i = {limit: limit / remotes.length};
+            }
+            return i;
+          });
+        }
         remoteArgs = remoteArgs.map(r => { return (typeof r == 'string') ? encodeURIComponent(r) : r });
         //console.log('remoteMethodProxy:remoteArgs : ' + JSON.stringify(remoteArgs));
         //console.log('remoteMethodProxy:method : ' + remoteMethod.stringName);
         //console.log('remoteMethodProxy:remoteArgs : ' + remoteArgs);
+        //console.log('remoteMethodProxy:remoteUrl : ' + remote.url);
+        //console.log('remoteMethodProxy:object : ' + remote.remote.objectName);
+        console.log('remoteMethodProxy:method : ' + remoteMethod.stringName);
         return await new Promise((resolve, reject) => {
           remote['remote'].invoke(remoteMethod.stringName, remoteArgs, function (err, result) {
+            console.log('Remote invoke : ' + remote.url);
             if (err != null) {
-              console.log(err);
-              reject(err);
-            } else if (Symbol.iterator in Object(result)) {
-              for (let item of result) {
-                item.provider = remote.url;
+              console.log('Error');
+              console.log('Remote method : ' + remoteMethod.stringName);
+              if (!limitMethodsString.includes(remoteMethod.stringName) && err.statusCode == 404) {
+                console.log('This backend does not have the requested item')
+                resolve([]);
+              } else {
+                console.log(err);
+                reject(err);
               }
+            } else {
+              if (Symbol.iterator in Object(result)) {
+                for (let item of result) {
+                  item.provider = remote.url;
+                }
+              }
+              resolve(result);
             }
-            resolve(result);
           });
         });
       });
@@ -192,21 +209,25 @@ function createProxyMethod(Model, remotes, remoteMethod) {
       data = remotes.map(async remote => {
         const ctorArgs = [encodeURIComponent(this.id)];
         let remoteArgs = Array.prototype.slice.call(arguments);
-        const lastArgIsFunc = typeof args[args.length - 1] === 'function';
+        const lastArgIsFunc = typeof remoteArgs[remoteArgs.length - 1] === 'function';
         if (lastArgIsFunc) {
           remoteArgs.pop();
         }
-        remoteArgs = remoteArgs.map(i => {
-          if (typeof i != "undefined" && 'limit' in i) {
-            i.limit = limit / remotes.length;
-          } else if ( typeof i == "undefined" ) {
-            i = {limit: limit / remotes.length};
-          }
-          return i;
-        });
+        if (limitMethodsString.includes(remoteMethod.stringName)) {
+          remoteArgs = remoteArgs.map(i => {
+            if (typeof i != "undefined" && 'limit' in i) {
+              i.limit = limit / remotes.length;
+            } else if ( typeof i == "undefined" ) {
+              i = {limit: limit / remotes.length};
+            }
+            return i;
+          });
+        }
         return await new Promise((resolve, reject) => {
           remote['remote'].invoke(remoteMethod.stringName, ctorArgs, remoteArgs, function (err, result) {
+            console.log('Remote invoke : ' + remote.url);
             if (err != null) {
+              console.log('Error');
               console.log(err);
               reject(err);
             } else if (Symbol.iterator in Object(result)) {
@@ -224,6 +245,9 @@ function createProxyMethod(Model, remotes, remoteMethod) {
       console.log('remoteMethodProxy:results : ' + JSON.stringify(results.length));
       Aggregator(results, remoteMethod.name, callback, limit);
     });
+    //.catch(error => {
+    // console.log('Error');
+    //});
 
     return callbackPromise;
   }

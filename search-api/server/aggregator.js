@@ -58,10 +58,17 @@ function Aggregator(results, method, callback, limit = -1) {
     //console.log('aggregator:Aggregator other 1');
     let mergedResults = new Array();
     for (let result of results) {
-      console.log('aggregator:Aggregator - Provider : ' + result[0].provider);
-      console.log('aggregator:Aggregator - Number of results : ' + result.length);
       if (result != null) {
-        mergedResults = mergedResults.concat(result);
+        if ( Array.isArray(result) ) {
+          console.log('aggregator:Aggregator - Number of results : ' + result.length);
+          if (result.length > 0) {
+            console.log('aggregator:Aggregator - Provider : ' + result[0].provider);
+            mergedResults = mergedResults.concat(result);
+          }
+        } else {
+          console.log('aggregator.Aggregator result is a single element')
+          mergedResults = mergedResults.concat(result);
+        }
       }
     }
     if (method == 'findById') {
