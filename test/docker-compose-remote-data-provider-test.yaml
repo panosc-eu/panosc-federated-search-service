@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      PROVIDERS             : "https://icatplus.esrf.fr/api,https://scicat.ess.eu/panosc-api,https://fairdata.ill.fr/fairdata/api,https://searchapi.maxiv.lu.se/api"
+      PROVIDERS             : ${PROVIDERS}
       API_VERSION           : "Current git commit"
       DOCKER_IMAGE_VERSION  : "Current git commit"
       HOSTING_FACILITY      : "Local Host"
