@@ -10,11 +10,33 @@ function compareByScore(a, b) {
   return 0;
 }
 
-function Sort(mergedResults) {
-  return mergedResults.sort(compareByScore)
+function sortAlphabetically(a, b) {
+  if (typeof a != "string" && typeof a != "undefined" && 'title' in a) {
+    // if we have title, sort by title
+    if (a.title.toLowerCase() < b.title.toLowerCase()) {
+      return -1;
+    }
+    else if (a.title.toLowerCase() > b.title.toLowerCase()) {
+      return 1;
+    }
+  }
+  else if (typeof a != "string" && typeof a != "undefined" && 'name' in a) {
+    // if we have name, sort by name
+    if (a.name.toLowerCase() < b.name.toLowerCase()) {
+      return -1;
+    }
+    else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+      return 1;
+    }
+  }
+  return 0;
 }
 
-function Aggregator(results, method, callback, limit = -1) {
+function Sort(mergedResults, sortByScore) {
+  return mergedResults.sort((sortByScore ? compareByScore : sortAlphabetically));
+}
+
+function Aggregator(results, method, callback, limit = -1, sortByScore = true) {
   //console.log('aggregator:Aggregator:results :' + results);
   //console.log('aggregator:Aggregator:method :' + method);
 
@@ -80,7 +102,7 @@ function Aggregator(results, method, callback, limit = -1) {
       }
     } else {
       //console.log('aggregator:Aggregator other 2');
-      mergedResults = Sort(mergedResults);
+      mergedResults = Sort(mergedResults, sortByScore);
       callback(null, (limit > 0 ? mergedResults.slice(0, limit) : mergedResults));
     }
   }

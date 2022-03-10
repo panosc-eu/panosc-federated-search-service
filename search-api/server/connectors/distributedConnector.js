@@ -148,7 +148,15 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         limit = i.limit;
       }
     });
-    //console.log('remoteMethodProxy:limit : ' + limit);
+    console.log('remoteMethodProxy:limit : ' + limit);
+
+    // check if we have query and there for we need to use score to order results
+    let sortByScore = args.some(i => {
+      if (typeof i != "string" && typeof i != "undefined" && 'query' in i) {
+        return true;
+      }
+    });
+    console.log('remoteMethodProxy:order by score : ' + sortByScore);
 
 
     if (findMethodNames.includes(remoteMethod.name)) {
@@ -167,15 +175,17 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         if (limitMethodsString.includes(remoteMethod.stringName)) {
           remoteArgs = remoteArgs.map(i => {
             if (typeof i != "string" && typeof i != "undefined" && 'limit' in i) {
-              i.limit = limit / remotes.length;
+              //i.limit = Math.ceil(limit / remotes.length);
+              i.limit = limit;
             } else if ( typeof i == "undefined" ) {
-              i = {limit: limit / remotes.length};
+              //i = {limit: Math.ceil(limit / remotes.length)};
+              i = {limit: limit};
             }
             return i;
           });
         }
         remoteArgs = remoteArgs.map(r => { return (typeof r == 'string') ? encodeURIComponent(r) : r });
-        //console.log('remoteMethodProxy:remoteArgs : ' + JSON.stringify(remoteArgs));
+        console.log('remoteMethodProxy:remoteArgs : ' + JSON.stringify(remoteArgs));
         //console.log('remoteMethodProxy:method : ' + remoteMethod.stringName);
         //console.log('remoteMethodProxy:remoteArgs : ' + remoteArgs);
         //console.log('remoteMethodProxy:remoteUrl : ' + remote.url);
@@ -216,9 +226,11 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         if (limitMethodsString.includes(remoteMethod.stringName)) {
           remoteArgs = remoteArgs.map(i => {
             if (typeof i != "undefined" && 'limit' in i) {
-              i.limit = limit / remotes.length;
+              //i.limit = Math.ceil(limit / remotes.length);
+              i.limit = limit;
             } else if ( typeof i == "undefined" ) {
-              i = {limit: limit / remotes.length};
+              //i = {limit: Math.ceil(limit / remotes.length)};
+              i = {limit: limit};
             }
             return i;
           });
@@ -243,7 +255,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     // we aggregate all the results returned by all the facilities
     Promise.all(data).then(function (results) {
       console.log('remoteMethodProxy:results : ' + JSON.stringify(results.length));
-      Aggregator(results, remoteMethod.name, callback, limit);
+      Aggregator(results, remoteMethod.name, callback, limit, sortByScore);
     });
     //.catch(error => {
     // console.log('Error');
