@@ -26,40 +26,59 @@ As November 2021, the production environment is accessible at the following URL:
 ## Configuration
 PaNOSC federated search can be configured by setting environmental variables.
 Following is the list of the available configurations, their meaning and default value:
-- API_VERSION           : API version used in the running instance.
-                          Default: unknown
-- DOCKER_IMAGE_VERSION  : tag of the docker image used for the running instance, if any.
-                          Default: unknown
-- HOSTING_FACILITY      : name of the hosting facility for the running instance.
-                          Default: unknown
-- ENVIRONMENT           : string identifying the environemnt where the instance is running.
-                          Example: develop, test, or production.
-                          Default: unknown
-- PROVIDERS             : comma separated list of facilities PaNOSC local search apis that are used when running queries.
-                          Example: "https://icatplus.esrf.fr/api,https://scicat.ess.eu/panosc-api,https://fairdata.ill.fr/fairdata/api"
-                          Default: unknown
-- DEFAULT_LIMIT         : number of results returned from each facility if no limit is provided in filter.
-                          Example: if set to 10. When no limit is provided in filter, the federated search will return 10 results from each facility.
-                          Default: 100
+-   API_VERSION  
+    API version used in the running instance.   
+    Default: unknown  
 
+-   DOCKER_IMAGE_VERSION  
+    tag of the docker image used for the running instance, if any.  
+    Default: unknown  
+ 
+-   HOSTING_FACILITY  
+    name of the hosting facility for the running instance.  
+    Default: unknown  
+
+-   ENVIRONMENT   
+    string identifying the environemnt where the instance is running.  
+    Example: develop, test, or production.  
+    Default: unknown  
+
+-   PROVIDERS  
+    comma separated list of facilities PaNOSC local search apis that are used when running queries.  
+    Example: "https://icatplus.esrf.fr/api,https://scicat.ess.eu/panosc-api,https://fairdata.ill.fr/fairdata/api"  
+    Default: unknown  
+
+-   DEFAULT_LIMIT  
+    number of results returned from each facility if no limit is provided in filter.  
+    Example: if set to 10. When no limit is provided in filter, the federated search will return 10 results from each facility.  
+    Default: 100  
+
+-   PROVIDER_TIMEOUT  
+    timeout in ms when waiting for results from each individual data provider.  
+    Default: 5000  
+  
+   
 All of this values can be verified by connecting to the base URL of the PaNOSC federated search instance that we would like to check.
 For example, the ESS PaNOSC federated search instance returns the following values:
 
+```
 > curl https://federated.scicat.ess.eu/
 {
-   "uptime_seconds" : 426443.573,
-   "uptime" : "118:27:23",
-   "api_version" : "v2.2",
+   "uptime_seconds"       : 426443.573,
+   "uptime"               : "118:27:23",
+   "api_version"          : "v2.2",
    "docker_image_version" : "v2.2",
-   "hosting_facility" : "ESS",
-   "environment" : "production",
+   "hosting_facility"     : "ESS",
+   "environment"          : "production",
+   "default_limit"        : 100,
+   "provider_timeout_ms"  : 1000,
    "data_providers" : [
       "https://icatplus.esrf.fr/api",
       "https://scicat.ess.eu/panosc-api",
       "https://fairdata.ill.fr/fairdata/api"
-   ],
-   "default_limit": : 100
+   ]
 }
+```
 
 ## Example queries
 
