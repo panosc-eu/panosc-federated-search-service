@@ -15,6 +15,7 @@ module.exports = function (server) {
     const hosting_facility = process.env.HOSTING_FACILITY || "unknown";
     const environment = process.env.ENVIRONMENT || "unknown";
     const data_providers = process.env.PROVIDERS.split(',') || ["unknown"];
+    const provider_timeout_ms = parseInt(process.env.PROVIDER_TIMEOUT || "1000");
     const default_limit = parseInt(process.env.DEFAULT_LIMIT || "100");
 
 
@@ -39,6 +40,7 @@ module.exports = function (server) {
       'hosting_facility': hosting_facility,
       'environment': environment,
       'data_providers': data_providers,
+      'provider_timeout_ms' : provider_timeout_ms,
       'default_limit' : default_limit
     };
 

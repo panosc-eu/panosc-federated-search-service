@@ -43,7 +43,7 @@ function DistributedConnector(settings) {
   }
   for (let url of this.urls) {
     console.log('- url : ' + url);
-    this.remotes.push({ 'url': url, 'remote': remoting.create(settings.options) });
+    this.remotes.push({ 'url': url, 'timeout': settings.timeout, 'remote': remoting.create(settings.options) });
   }
 
   // handle mixins in the define() method
@@ -174,7 +174,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         }
         if (limitMethodsString.includes(remoteMethod.stringName)) {
           remoteArgs = remoteArgs.map(i => {
-            if (typeof i != "string" && typeof i != "undefined" && 'limit' in i) {
+            if (typeof i != "string" && typeof i != "undefined") {
               //i.limit = Math.ceil(limit / remotes.length);
               i.limit = limit;
             } else if ( typeof i == "undefined" ) {
@@ -191,7 +191,11 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         //console.log('remoteMethodProxy:remoteUrl : ' + remote.url);
         //console.log('remoteMethodProxy:object : ' + remote.remote.objectName);
         console.log('remoteMethodProxy:method : ' + remoteMethod.stringName);
-        return await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
+          const timeoutId = setTimeout(() => {
+            resolve([]);
+            clearTimeout(timeoutId);
+          },remote['timeout']);
           remote['remote'].invoke(remoteMethod.stringName, remoteArgs, function (err, result) {
             console.log('Remote invoke : ' + remote.url);
             if (err != null) {
@@ -212,6 +216,8 @@ function createProxyMethod(Model, remotes, remoteMethod) {
               }
               resolve(result);
             }
+            // clear the timeout that we setup for this request
+            clearTimeout(timeoutId);
           });
         });
       });
@@ -235,7 +241,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
             return i;
           });
         }
-        return await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
           remote['remote'].invoke(remoteMethod.stringName, ctorArgs, remoteArgs, function (err, result) {
             console.log('Remote invoke : ' + remote.url);
             if (err != null) {
@@ -253,9 +259,15 @@ function createProxyMethod(Model, remotes, remoteMethod) {
       });
     }
     // we aggregate all the results returned by all the facilities
-    Promise.all(data).then(function (results) {
+    Promise.allSettled(data).then(function (results) {
       console.log('remoteMethodProxy:results : ' + JSON.stringify(results.length));
-      Aggregator(results, remoteMethod.name, callback, limit, sortByScore);
+      Aggregator(
+        results.map( e => e['value'] ),
+        remoteMethod.name,
+        callback,
+        limit,
+        sortByScore
+      );
     });
     //.catch(error => {
     // console.log('Error');
