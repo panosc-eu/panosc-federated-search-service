@@ -2,10 +2,6 @@
 Repository for the federated PaNOSC search service, unified interface for searching all open datasets available at all participating facilities.
 
 
-## Documentation
-[Architecture](https://confluence.panosc.eu/display/wp3/Search+aggregation) of search API system.
-
-
 ## Prerequisites
 - npm >= 6
 - node >= 8
