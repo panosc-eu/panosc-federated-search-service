@@ -37,7 +37,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ghcr.io/panosc-eu/panosc-search-api
+            ghcr.io/panosc-eu/panosc-federated-search-service
           flavor: |
             latest=false
           tags: |
