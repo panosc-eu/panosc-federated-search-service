@@ -7,7 +7,9 @@ module.exports = (Model, options) => {
       //console.log("Model:afterRemote:test : " + !('score' in instance));
       if (!('score' in instance) || typeof (instance.score) != 'number' || instance.score < 0 || instance.score >= 1) {
         //console.log("Model:afterRemote setting score to 0");
-        instance.score = 0;
+        //instance.score = 0;
+        console.log("Model.afterRemote: invalid score");
+        console.log("Model.afterRemote:Result: " + JSON.stringify(instance));
       }
     });
     next();
