@@ -14,7 +14,7 @@ const Aggregator = require('../aggregator');
 
 const findMethodNames = ['findById', 'findOne'];
 
-const limitMethodsString = ['Dataset.find', 'Document.find', 'Instrument.find' ];
+const limitMethodsString = ['Dataset.find', 'Document.find', 'Instrument.find'];
 
 module.exports = DistributedConnector;
 
@@ -140,9 +140,13 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     }
     const callbackPromise = callback.promise;
 
+    // check if the first element is a number
+    // some document's id are just numbers and needs to be covnerted to string
+    args[0] = (typeof args[0] == "number" ? args[0].toString() : args[0])
+
     // check if filter contains limit
     //console.log('remoteMethodProxy:args : ' + JSON.stringify(args));
-    let limit =  parseInt(process.env.DEFAULT_LIMIT || "100");;
+    let limit = parseInt(process.env.DEFAULT_LIMIT || "100");;
     args.map(i => {
       if (typeof i != "string" && typeof i != "undefined" && 'limit' in i) {
         limit = i.limit;
@@ -177,9 +181,9 @@ function createProxyMethod(Model, remotes, remoteMethod) {
             if (typeof i != "string" && typeof i != "undefined") {
               //i.limit = Math.ceil(limit / remotes.length);
               i.limit = limit;
-            } else if ( typeof i == "undefined" ) {
+            } else if (typeof i == "undefined") {
               //i = {limit: Math.ceil(limit / remotes.length)};
-              i = {limit: limit};
+              i = { limit: limit };
             }
             return i;
           });
@@ -195,7 +199,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
           const timeoutId = setTimeout(() => {
             resolve([]);
             clearTimeout(timeoutId);
-          },remote['timeout']);
+          }, remote['timeout']);
           remote['remote'].invoke(remoteMethod.stringName, remoteArgs, function (err, result) {
             console.log('Remote invoke : ' + remote.url);
             if (err != null) {
@@ -234,9 +238,9 @@ function createProxyMethod(Model, remotes, remoteMethod) {
             if (typeof i != "undefined" && 'limit' in i) {
               //i.limit = Math.ceil(limit / remotes.length);
               i.limit = limit;
-            } else if ( typeof i == "undefined" ) {
+            } else if (typeof i == "undefined") {
               //i = {limit: Math.ceil(limit / remotes.length)};
-              i = {limit: limit};
+              i = { limit: limit };
             }
             return i;
           });
@@ -262,7 +266,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     Promise.allSettled(data).then(function (results) {
       console.log('remoteMethodProxy:results : ' + JSON.stringify(results.length));
       Aggregator(
-        results.map( e => e['value'] ),
+        results.map(e => e['value']),
         remoteMethod.name,
         callback,
         limit,
