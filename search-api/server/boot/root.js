@@ -5,6 +5,8 @@
 
 'use strict';
 
+const utils = require("../../common/utils");
+
 module.exports = function (server) {
   // Install a `/` route that returns server status
   const router = server.loopback.Router();
@@ -17,7 +19,7 @@ module.exports = function (server) {
     const data_providers = process.env.PROVIDERS.split(',') || ["unknown"];
     const provider_timeout_ms = parseInt(process.env.PROVIDER_TIMEOUT || "1000");
     const default_limit = parseInt(process.env.DEFAULT_LIMIT || "100");
-
+    const filter_invalid_scores = utils.getBoolEnvVar("FILTER_INVALID_SCORES", true);
 
     function format(seconds) {
       function pad(s) {
@@ -40,8 +42,9 @@ module.exports = function (server) {
       'hosting_facility': hosting_facility,
       'environment': environment,
       'data_providers': data_providers,
-      'provider_timeout_ms' : provider_timeout_ms,
-      'default_limit' : default_limit
+      'provider_timeout_ms': provider_timeout_ms,
+      'default_limit': default_limit,
+      'filter_invalid_scores': filter_invalid_scores
     };
 
     res.send(response_string);
