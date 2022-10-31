@@ -4,7 +4,7 @@ module.exports = (Model, options) => {
   // Set score property if not present
   Model.afterRemote('find', (ctx, result, next) => {
 
-    const filter_invalid_results = utils.getBoolEnvVar("FILTER_INVALID_RESULTS", true);
+    const filter_invalid_scores = utils.getBoolEnvVar("FILTER_INVALID_SCORES", true);
 
     // log invalid scores
     ctx.result.forEach((instance) => {
@@ -20,7 +20,7 @@ module.exports = (Model, options) => {
     });
 
     // remove invalid scores outside the interval (0-1], 0 excluded, 1 included
-    if (filter_invalid_results) {
+    if (filter_invalid_scores) {
       ctx.result = ctx.result.filter((instance) => {
         if (!('score' in instance) ||
           typeof (instance.score) != 'number' ||
