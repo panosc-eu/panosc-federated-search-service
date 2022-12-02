@@ -1,4 +1,4 @@
-name: PaNOSC Federated Search API CI
+name: Test
 
 on:
   pull_request:
