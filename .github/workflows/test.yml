@@ -22,6 +22,10 @@ jobs:
           cd test
           docker-compose -f docker-compose-local-data-provider-test.ci.yaml up -d
           
+      - name: Wait until service ready
+        run: sleep 30s
+        shell: bash
+          
       - name: Check running containers
         run: docker ps -a
         
