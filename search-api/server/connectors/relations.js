@@ -52,12 +52,12 @@ function RelationMixin() {
  *   // Query chapters for the book
  *   book.chapters(function(err, chapters) {
  *     // all chapters with bookId = book.id
- *     console.log(chapters);
+ *     logDebug(chapters);
  *   });
  *
  *   book.chapters({where: {name: 'test'}, function(err, chapters) {
  *    // All chapters with bookId = book.id and name = 'test'
- *     console.log(chapters);
+ *     logDebug(chapters);
  *   });
  * });
  *```
@@ -133,7 +133,7 @@ RelationMixin.hasMany = function hasMany(modelTo, params) {
  * @property {String} foreignKey Name of foreign key property.
  *
  */
-RelationMixin.belongsTo = function(modelTo, params) {
+RelationMixin.belongsTo = function (modelTo, params) {
   const def = RelationDefinition.belongsTo(this, modelTo, params);
   this.dataSource.adapter.resolve(this);
   defineRelationProperty(this, def);
@@ -205,9 +205,9 @@ RelationMixin.embedsMany = function embedsMany(modelTo, params) {
 
 function defineRelationProperty(modelClass, def) {
   Object.defineProperty(modelClass.prototype, def.name, {
-    get: function() {
+    get: function () {
       const that = this;
-      const scope = function() {
+      const scope = function () {
         const cachedEntities = that.__cachedRelations &&
           that.__cachedRelations[def.name];
 
@@ -223,19 +223,19 @@ function defineRelationProperty(modelClass, def) {
         }
       };
 
-      scope.count = function() {
+      scope.count = function () {
         return that['__count__' + def.name].apply(that, arguments);
       };
-      scope.create = function() {
+      scope.create = function () {
         return that['__create__' + def.name].apply(that, arguments);
       };
-      scope.deleteById = scope.destroyById = function() {
+      scope.deleteById = scope.destroyById = function () {
         return that['__destroyById__' + def.name].apply(that, arguments);
       };
-      scope.exists = function() {
+      scope.exists = function () {
         return that['__exists__' + def.name].apply(that, arguments);
       };
-      scope.findById = function() {
+      scope.findById = function () {
         return that['__findById__' + def.name].apply(that, arguments);
       };
       return scope;

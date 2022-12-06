@@ -16,6 +16,12 @@ const findMethodNames = ['findById', 'findOne'];
 
 const limitMethodsString = ['Dataset.find', 'Document.find', 'Instrument.find'];
 
+//var { logInfo, logDebug } = require('@user-office-software/duo-logger');
+//const logger = require('@user-office-software/duo-logger').logger;
+const { getLogger } = require('@user-office-software/duo-logger');
+const logger = getLogger();
+
+
 module.exports = DistributedConnector;
 
 /**
@@ -36,13 +42,18 @@ function DistributedConnector(settings) {
   this.remotes = new Array();
 
   if (settings.urls) {
-    console.log('Providers: ' + settings.urls);
     this.urls = settings.urls;
   } else {
     this.urls = [this.protocol + '://' + this.host + ':' + this.port + this.root];
   }
+  logger.logInfo(
+    'DistributedConnector 1',
+    {
+      'providers': settings.urls,
+      'urls': this.urls
+    }
+  );
   for (let url of this.urls) {
-    console.log('- url : ' + url);
     this.remotes.push({ 'url': url, 'timeout': settings.timeout, 'remote': remoting.create(settings.options) });
   }
 
@@ -65,9 +76,15 @@ DistributedConnector.initialize = function (dataSource, callback) {
 };
 
 DistributedConnector.prototype.define = function (definition) {
-  //console.log("DistributedConnector.define");
   const Model = definition.model;
   const remotes = this.remotes;
+  logger.logDebug(
+    "DistributedConnector define",
+    {
+      "number of remotes": remotes.length,
+      "model name": Model.modelName,
+    }
+  );
 
   assert(Model.sharedClass,
     'cannot attach ' +
@@ -84,11 +101,14 @@ DistributedConnector.prototype.define = function (definition) {
 };
 
 DistributedConnector.prototype.resolve = function (Model) {
-  //console.log('--------------------');
-  //console.log("DistributedConnector.resolve");
-  //console.log(" - Model : " + Model.modelName);
   const remotes = this.remotes;
-  //console.log(" - Remotes : " + remotes.length);
+  logger.logDebug(
+    "DistributedConnector resolve",
+    {
+      "number of remotes": remotes.length,
+      "model name": Model.modelName,
+    }
+  );
 
   Model.sharedClass.methods().forEach(function (remoteMethod) {
     if (remoteMethod.name !== 'Change' && remoteMethod.name !== 'Checkpoint') {
@@ -121,15 +141,27 @@ DistributedConnector.prototype.setupRemotingTypeFor = function (Model) {
 function createProxyMethod(Model, remotes, remoteMethod) {
   const scope = remoteMethod.isStatic ? Model : Model.prototype;
   const original = scope[remoteMethod.name];
-  //console.log('--------------------');
-  //console.log('distributedConnector:createProxyMethod');
-  //console.log('- Model : ' + Model.modelName);
-  //console.log('- Remotes : ' + remotes.length);
-  //console.log('- Remotes Url : ' + remotes[0].url);
-  //console.log('- remote Method :' + remoteMethod.name);
+  logger.logDebug(
+    'distributedConnector:createProxyMethod',
+    {
+      'number of remotes': remotes.length,
+      'remote method name': remoteMethod.name
+    }
+  );
 
   function remoteMethodProxy() {
-    //console.log('remoteMethodProxy:Arguments : ', JSON.stringify(arguments));
+    logger.logDebug(
+      'remoteMethodProxy 1',
+      {
+        'Arguments': arguments
+      }
+    );
+    logger.logDebug(
+      'Federated search query request',
+      {
+        'request': arguments
+      }
+    );
     const args = Array.prototype.slice.call(arguments);
     const lastArgIsFunc = typeof args[args.length - 1] === 'function';
     let callback;
@@ -145,14 +177,24 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     args[0] = (typeof args[0] == "number" ? args[0].toString() : args[0])
 
     // check if filter contains limit
-    //console.log('remoteMethodProxy:args : ' + JSON.stringify(args));
+    logger.logDebug(
+      'remoteMethodProxy 2',
+      {
+        'args': args
+      }
+    );
     let limit = parseInt(process.env.DEFAULT_LIMIT || "100");;
     args.map(i => {
       if (typeof i != "string" && typeof i != "undefined" && 'limit' in i) {
         limit = i.limit;
       }
     });
-    console.log('remoteMethodProxy:limit : ' + limit);
+    logger.logDebug(
+      'remoteMethodProxy 3',
+      {
+        'limit': limit
+      }
+    );
 
     // check if we have query and there for we need to use score to order results
     let sortByScore = args.some(i => {
@@ -160,7 +202,12 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         return true;
       }
     });
-    console.log('remoteMethodProxy:order by score : ' + sortByScore);
+    logger.logDebug(
+      'remoteMethodProxy 4',
+      {
+        'order by score': sortByScore
+      }
+    );
 
 
     if (findMethodNames.includes(remoteMethod.name)) {
@@ -169,7 +216,13 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     let data = new Array();
     if (remoteMethod.isStatic) {
       data = remotes.map(async remote => {
-        //console.log('remoteMethodProxy:remote static :' + remote.url);
+        logger.logDebug(
+          'remoteMethodProxy remote static 1',
+          {
+            'remote': remote,
+            'method': remoteMethod
+          }
+        );
         //let remoteArgs = [...args];
         let remoteArgs = Array.prototype.slice.call(arguments);
         const lastArgIsFunc = typeof remoteArgs[remoteArgs.length - 1] === 'function';
@@ -189,27 +242,36 @@ function createProxyMethod(Model, remotes, remoteMethod) {
           });
         }
         remoteArgs = remoteArgs.map(r => { return (typeof r == 'string') ? encodeURIComponent(r) : r });
-        console.log('remoteMethodProxy:remoteArgs : ' + JSON.stringify(remoteArgs));
-        //console.log('remoteMethodProxy:method : ' + remoteMethod.stringName);
-        //console.log('remoteMethodProxy:remoteArgs : ' + remoteArgs);
-        //console.log('remoteMethodProxy:remoteUrl : ' + remote.url);
-        //console.log('remoteMethodProxy:object : ' + remote.remote.objectName);
-        console.log('remoteMethodProxy:method : ' + remoteMethod.stringName);
+        logger.logDebug(
+          'remoteMethodProxy remote static 2',
+          {
+            'remote args': remoteArgs
+          }
+        )
         return new Promise((resolve, reject) => {
           const timeoutId = setTimeout(() => {
             resolve([]);
             clearTimeout(timeoutId);
           }, remote['timeout']);
           remote['remote'].invoke(remoteMethod.stringName, remoteArgs, function (err, result) {
-            console.log('Remote invoke : ' + remote.url);
+            logger.logDebug(
+              'remoteMethodProxy remote static invoke 1',
+              {
+                'url': remote.url
+              }
+            );
             if (err != null) {
-              console.log('Error');
-              console.log('Remote method : ' + remoteMethod.stringName);
+              logger.logDebug(
+                'remoteMethodProxy remote static invoke 2 error',
+                {
+                  'remote method': remoteMethod.stringName,
+                  'error': err
+                }
+              );
               if (!limitMethodsString.includes(remoteMethod.stringName) && err.statusCode == 404) {
-                console.log('This backend does not have the requested item')
+                logger.logDebug('This backend does not have the requested item', {})
                 resolve([]);
               } else {
-                console.log(err);
                 reject(err);
               }
             } else {
@@ -227,6 +289,13 @@ function createProxyMethod(Model, remotes, remoteMethod) {
       });
     } else {
       data = remotes.map(async remote => {
+        logger.logDebug(
+          'remoteMethodProxy remote non-static 1',
+          {
+            'remote': JSON.stringify(remote),
+            'method': JSON.stringify(remoteMethod)
+          }
+        );
         const ctorArgs = [encodeURIComponent(this.id)];
         let remoteArgs = Array.prototype.slice.call(arguments);
         const lastArgIsFunc = typeof remoteArgs[remoteArgs.length - 1] === 'function';
@@ -245,12 +314,28 @@ function createProxyMethod(Model, remotes, remoteMethod) {
             return i;
           });
         }
+        logger.logDebug(
+          'remoteMethodProxy remote static 2',
+          {
+            'remote args': remoteArgs
+          }
+        )
         return new Promise((resolve, reject) => {
           remote['remote'].invoke(remoteMethod.stringName, ctorArgs, remoteArgs, function (err, result) {
-            console.log('Remote invoke : ' + remote.url);
+            logger.logDebug(
+              'remoteMethodProxy remote non-static invoke 1',
+              {
+                'url': remote.url
+              }
+            );
             if (err != null) {
-              console.log('Error');
-              console.log(err);
+              logger.logDebug(
+                'remoteMethodProxy remote static invoke 2 error',
+                {
+                  'remote method': remoteMethod.stringName,
+                  'error': err
+                }
+              );
               reject(err);
             } else if (Symbol.iterator in Object(result)) {
               for (let item of result) {
@@ -264,7 +349,12 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     }
     // we aggregate all the results returned by all the facilities
     Promise.allSettled(data).then(function (results) {
-      console.log('remoteMethodProxy:results : ' + JSON.stringify(results.length));
+      logger.logDebug(
+        'remoteMethodProxy all settled',
+        {
+          'numnber of results': results.length,
+        }
+      );
       Aggregator(
         results.map(e => e['value']),
         remoteMethod.name,
@@ -274,7 +364,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
       );
     });
     //.catch(error => {
-    // console.log('Error');
+    // logger.logDebug('Error');
     //});
 
     return callbackPromise;

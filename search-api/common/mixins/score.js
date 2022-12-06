@@ -1,4 +1,6 @@
 const utils = require("../../common/utils");
+const { getLogger } = require('@user-office-software/duo-logger');
+const logger = getLogger();
 
 module.exports = (Model, options) => {
   // Set score property if not present
@@ -8,14 +10,10 @@ module.exports = (Model, options) => {
 
     // log invalid scores
     ctx.result.forEach((instance) => {
-      //console.log("Model:afterRemote:instance : " + JSON.stringify(instance));
-      //console.log("Model:afterRemote:keys : " + JSON.stringify(Object.keys(instance)));
-      //console.log("Model:afterRemote:test : " + !('score' in instance));
       if (!('score' in instance) || typeof (instance.score) != 'number' || instance.score < 0 || instance.score >= 1) {
-        //console.log("Model:afterRemote setting score to 0");
         //instance.score = 0;
-        console.log("Model.afterRemote: invalid score");
-        console.log("Model.afterRemote:Result: " + JSON.stringify(instance));
+        logger.logWarn("Model.afterRemote: invalid score");
+        logger.logWarn("Model.afterRemote:Result: " + JSON.stringify(instance));
       }
     });
 
@@ -25,8 +23,8 @@ module.exports = (Model, options) => {
         if (!('score' in instance) ||
           typeof (instance.score) != 'number' ||
           instance.score <= 0 || instance.score >= 1) {
-          console.log("Model.afterRemote: removing invalid score");
-          console.log("Model.afterRemote:Result: " + JSON.stringify(instance));
+          logger.logWarn("Model.afterRemote: removing invalid score");
+          logger.logWarn("Model.afterRemote:Result: " + JSON.stringify(instance));
           return false;
         }
         return true;

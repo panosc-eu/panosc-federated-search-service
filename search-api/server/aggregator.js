@@ -1,3 +1,6 @@
+const { getLogger } = require('@user-office-software/duo-logger');
+const logger = getLogger();
+
 module.exports = Aggregator;
 
 function compareByScore(a, b) {
@@ -37,11 +40,16 @@ function Sort(mergedResults, sortByScore) {
 }
 
 function Aggregator(results, method, callback, limit = -1, sortByScore = true) {
-  //console.log('aggregator:Aggregator:results :' + results);
-  //console.log('aggregator:Aggregator:method :' + method);
+  logger.logDebug(
+    'aggregator Aggregator 1',
+    {
+      'number of results': results.length,
+      'method': method,
+    }
+  );
 
   if (method == 'count') {
-    //console.log('aggregator:Aggregator count');
+    logger.logDebug('aggregator Aggregator count', {});
     let mergedResults = 0;
     for (let result of results) {
       if (result != null) {
@@ -50,7 +58,7 @@ function Aggregator(results, method, callback, limit = -1, sortByScore = true) {
     }
     callback(null, mergedResults);
   } else if (method == 'statistics') {
-    //console.log('aggregator:Aggregator statistics');
+    logger.logDebug('aggregator Aggregator statistics', {});
     var parameters = {};
     for (let result of results) {
       if (result != null) {
@@ -77,31 +85,59 @@ function Aggregator(results, method, callback, limit = -1, sortByScore = true) {
     }
     callback(null, parameters);
   } else {
-    //console.log('aggregator:Aggregator other 1');
+    logger.logDebug('aggregator Aggregator other 1', {});
     let mergedResults = new Array();
     for (let result of results) {
       if (result != null) {
-        if ( Array.isArray(result) ) {
-          console.log('aggregator:Aggregator - Number of results : ' + result.length);
+        if (Array.isArray(result)) {
+          logger.logInfo(
+            'aggregator Aggregator results loop 1',
+            {
+              'number of results': result.length
+            }
+          );
           if (result.length > 0) {
-            console.log('aggregator:Aggregator - Provider : ' + result[0].provider);
+            logger.logInfo(
+              'aggregator Aggregator results loop 2',
+              {
+                'provider': result[0].provider,
+              }
+            );
             mergedResults = mergedResults.concat(result);
           }
         } else {
-          console.log('aggregator.Aggregator result is a single element')
+          logger.logInfo(
+            'aggregator Aggregator results loop 3',
+            {
+              'number of results': 1,
+              'provider': results.provider,
+            }
+          );
           mergedResults = mergedResults.concat(result);
         }
       }
     }
     if (method == 'findById') {
-      //console.log('aggregator:Aggregator findById');
+      logger.logDebug(
+        'aggregator Aggregator findById',
+        {
+          'number of total results': mergedResults.length,
+        }
+      );
       if (mergedResults.length > 0) {
         callback(null, mergedResults[0]);
       } else {
         callback(null, null);
       }
     } else {
-      //console.log('aggregator:Aggregator other 2');
+      logger.logDebug(
+        'aggregator Aggregator other 2',
+        {
+          'number of total results': mergedResults.length,
+          'sort by score': sortByScore,
+          'limit': limit
+        }
+      );
       mergedResults = Sort(mergedResults, sortByScore);
       callback(null, (limit > 0 ? mergedResults.slice(0, limit) : mergedResults));
     }
