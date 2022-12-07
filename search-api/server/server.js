@@ -1,22 +1,38 @@
 var loopback = require('loopback');
 var boot = require('loopback-boot');
-
 var app = module.exports = loopback();
+
+const { LoggerSetup } = require('./LoggerSetup');
+
+LoggerSetup();
+
+const { getLogger } = require('@user-office-software/duo-logger');
+const logger = getLogger();
 
 app.connector('distributedConnector', require('./connectors/distributedConnector'))
 
 // boot scripts mount components like REST API
 boot(app, __dirname);
 
-app.start = function() {
+app.start = function () {
   // start the web server
-  return app.listen(function() {
+  return app.listen(function () {
     app.emit('started');
     var baseUrl = app.get('url').replace(/\/$/, '');
-    console.log('Web server listening at: %s', baseUrl); //eslint-disable-line no-console
+    logger.logInfo(
+      'PaNOSC federated search started',
+      {
+        'url': baseUrl
+      }
+    ); //eslint-disable-line no-console
     if (app.get('loopback-component-explorer')) {
       var explorerPath = app.get('loopback-component-explorer').mountPath;
-      console.log('Browse your REST API at %s%s', baseUrl, explorerPath); //eslint-disable-line no-console
+      logger.logInfo(
+        'Swagger interface available',
+        {
+          'url': baseUrl + explorerPath
+        }
+      ); //eslint-disable-line no-console
     }
   });
 };

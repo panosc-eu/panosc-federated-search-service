@@ -1,10 +1,14 @@
+import { logInfo, logWarn, logDebug } from "@user-office-software/duo-logger";
+
+
+
 module.exports = CustomAdapter;
 
 function CustomAdapter(settings) {
-  console.log('CustomAdapter: ' + JSON.stringify(settings));
+  logDebug('CustomAdapter: ' + JSON.stringify(settings));
 }
 
-CustomAdapter.prototype.connect = function(callback) {
+CustomAdapter.prototype.connect = function (callback) {
   process.nextTick(callback);
 };
 
@@ -16,8 +20,8 @@ CustomAdapter.prototype.connect = function(callback) {
  *
  */
 CustomAdapter.prototype.exists = function exists(model, id, callback) {
-  console.log('CustomAdapter exists: ' + model + ' ' + id);
-  process.nextTick(function() { callback(null, false); }.bind(this));
+  logDebug('CustomAdapter exists: ' + model + ' ' + id);
+  process.nextTick(function () { callback(null, false); }.bind(this));
 };
 
 /**
@@ -27,8 +31,8 @@ CustomAdapter.prototype.exists = function exists(model, id, callback) {
  * @param {Function} [callback] The callback function. Parameters: (error or null, model instance if it exists otherwise null).
  */
 CustomAdapter.prototype.find = function find(model, id, callback) {
-  console.log('CustomAdapter find: ' + model + ' ' + id);
-  process.nextTick(function() { callback(null, null); }.bind(this));
+  logDebug('CustomAdapter find: ' + model + ' ' + id);
+  process.nextTick(function () { callback(null, null); }.bind(this));
 };
 
 /**
@@ -39,8 +43,8 @@ CustomAdapter.prototype.find = function find(model, id, callback) {
  * @param {Function} [callback] The callback function. Parameters: (error or null, Array of model instances).
  */
 CustomAdapter.prototype.all = function all(model, filter, callback) {
-  console.log('CustomAdapter all: ' + model + ' ' + JSON.stringify(filter));
-  process.nextTick(function() { callback(null, []); });
+  logDebug('CustomAdapter all: ' + model + ' ' + JSON.stringify(filter));
+  process.nextTick(function () { callback(null, []); });
 };
 
 /**
@@ -52,6 +56,6 @@ CustomAdapter.prototype.all = function all(model, filter, callback) {
  *
  */
 CustomAdapter.prototype.count = function count(model, where, callback) {
-  console.log('CustomAdapter count: ' + model + ' ' + JSON.stringify(where));
-  process.nextTick(function() { callback(null, 0); });
+  logDebug('CustomAdapter count: ' + model + ' ' + JSON.stringify(where));
+  process.nextTick(function () { callback(null, 0); });
 };
