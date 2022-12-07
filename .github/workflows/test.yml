@@ -1,25 +1,39 @@
-name: PaNOSC Federated Search API CI
+name: Test
 
-on: [push]
-
+on:
+  pull_request:
+    branches: 
+      - master
+      
 jobs:
-  build:
+  test:
+    name: Run tests
     runs-on: ubuntu-latest
-
+    
     env:
       CI: true
-
-    steps:
-      - uses: actions/checkout@v1
+      
+    steps:  
+      - name: Checkout code
+        uses: actions/checkout@v1
+        
       - name: Build the docker-compose stack
         run: |
           cd test
           docker-compose -f docker-compose-local-data-provider-test.ci.yaml up -d
+          
+      - name: Wait until service ready
+        run: sleep 30s
+        shell: bash
+          
       - name: Check running containers
         run: docker ps -a
+        
       - name: Check logs
         run: docker logs test-search-api
+        
       - name: Check PaNOSC federated search configuration
         run: docker exec test-search-api wget "http://test-search-api:3000"
+        
       - name: Run test suite
         run: echo "Tests are fine!!! Everything is fine!!!"
