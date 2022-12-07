@@ -250,6 +250,13 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         )
         return new Promise((resolve, reject) => {
           const timeoutId = setTimeout(() => {
+            logger.logDebug(
+              'remoteMethodProxy remote static invoke timeout',
+              {
+                'url': remote.url,
+                'timeout': remote['timeout'],
+              }
+            );
             resolve([]);
             clearTimeout(timeoutId);
           }, remote['timeout']);
