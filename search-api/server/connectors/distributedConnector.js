@@ -18,8 +18,9 @@ const limitMethodsString = ['Dataset.find', 'Document.find', 'Instrument.find'];
 
 //var { logInfo, logDebug } = require('@user-office-software/duo-logger');
 //const logger = require('@user-office-software/duo-logger').logger;
-const { getLogger } = require('@user-office-software/duo-logger');
-const logger = getLogger();
+//const { getLogger } = require('@user-office-software/duo-logger');
+//const logger = getLogger();
+const { logger } = require('@user-office-software/duo-logger');
 
 
 module.exports = DistributedConnector;

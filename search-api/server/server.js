@@ -6,8 +6,10 @@ const { LoggerSetup } = require('./LoggerSetup');
 
 LoggerSetup();
 
-const { getLogger } = require('@user-office-software/duo-logger');
-const logger = getLogger();
+//const { getLogger } = require('@user-office-software/duo-logger');
+//const logger = getLogger();
+
+const { logger } = require('@user-office-software/duo-logger');
 
 app.connector('distributedConnector', require('./connectors/distributedConnector'))
 

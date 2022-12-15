@@ -1,6 +1,7 @@
 const utils = require("../../common/utils");
-const { getLogger } = require('@user-office-software/duo-logger');
-const logger = getLogger();
+//const { getLogger } = require('@user-office-software/duo-logger');
+//const logger = getLogger();
+const { logger } = require('@user-office-software/duo-logger');
 
 module.exports = (Model, options) => {
   // Set score property if not present
