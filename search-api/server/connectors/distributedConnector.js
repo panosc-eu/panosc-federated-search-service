@@ -217,7 +217,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
     let data = new Array();
     if (remoteMethod.isStatic) {
       data = remotes.map(async remote => {
-        logger.logDebug(
+        logger.logInfo(
           'remoteMethodProxy remote static 1',
           {
             'remote': remote,
@@ -243,7 +243,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
           });
         }
         remoteArgs = remoteArgs.map(r => { return (typeof r == 'string') ? encodeURIComponent(r) : r });
-        logger.logDebug(
+        logger.logInfo(
           'remoteMethodProxy remote static 2',
           {
             'remote args': remoteArgs
@@ -251,7 +251,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         )
         return new Promise((resolve, reject) => {
           const timeoutId = setTimeout(() => {
-            logger.logDebug(
+            logger.logInfo(
               'remoteMethodProxy remote static invoke timeout',
               {
                 'url': remote.url,
@@ -262,16 +262,17 @@ function createProxyMethod(Model, remotes, remoteMethod) {
             clearTimeout(timeoutId);
           }, remote['timeout']);
           remote['remote'].invoke(remoteMethod.stringName, remoteArgs, function (err, result) {
-            logger.logDebug(
+            logger.logInfo(
               'remoteMethodProxy remote static invoke 1',
               {
                 'url': remote.url
               }
             );
             if (err != null) {
-              logger.logDebug(
-                'remoteMethodProxy remote static invoke 2 error',
+              logger.logInfo(
+                'remoteMethodProxy remote static invoke 2 reject',
                 {
+                  'url': remote.url,
                   'remote method': remoteMethod.stringName,
                   'error': err
                 }
@@ -288,6 +289,13 @@ function createProxyMethod(Model, remotes, remoteMethod) {
                   item.provider = remote.url;
                 }
               }
+              logger.logInfo(
+                'remoteMethodProxy remote static invoke 3 resolve',
+                {
+                  'url': remote.url,
+                  'remote method': remoteMethod.stringName
+                }
+              );
               resolve(result);
             }
             // clear the timeout that we setup for this request
@@ -297,7 +305,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
       });
     } else {
       data = remotes.map(async remote => {
-        logger.logDebug(
+        logger.logInfo(
           'remoteMethodProxy remote non-static 1',
           {
             'remote': JSON.stringify(remote),
@@ -322,7 +330,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
             return i;
           });
         }
-        logger.logDebug(
+        logger.logInfo(
           'remoteMethodProxy remote static 2',
           {
             'remote args': remoteArgs
@@ -330,16 +338,17 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         )
         return new Promise((resolve, reject) => {
           remote['remote'].invoke(remoteMethod.stringName, ctorArgs, remoteArgs, function (err, result) {
-            logger.logDebug(
+            logger.logInfo(
               'remoteMethodProxy remote non-static invoke 1',
               {
                 'url': remote.url
               }
             );
             if (err != null) {
-              logger.logDebug(
-                'remoteMethodProxy remote static invoke 2 error',
+              logger.logInfo(
+                'remoteMethodProxy remote non-static invoke 2 reject',
                 {
+                  'url': remote.url,
                   'remote method': remoteMethod.stringName,
                   'error': err
                 }
@@ -350,6 +359,13 @@ function createProxyMethod(Model, remotes, remoteMethod) {
                 item.provider = remote.url;
               }
             }
+            logger.logInfo(
+              'remoteMethodProxy remote non-static invoke 3 resolve',
+              {
+                'url': remote.url,
+                'remote method': remoteMethod.stringName,
+              }
+            );
             resolve(result);
           });
         });
@@ -360,7 +376,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
       logger.logDebug(
         'remoteMethodProxy all settled',
         {
-          'numnber of results': results.length,
+          'number of results': results.length,
         }
       );
       Aggregator(
