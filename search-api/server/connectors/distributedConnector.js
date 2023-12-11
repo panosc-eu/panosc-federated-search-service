@@ -220,7 +220,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         logger.logInfo(
           'remoteMethodProxy remote static 1',
           {
-            'remote': remote,
+            'url': remote.url,
             'method': remoteMethod
           }
         );
@@ -246,6 +246,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         logger.logInfo(
           'remoteMethodProxy remote static 2',
           {
+            'url': remote.url,
             'remote args': remoteArgs
           }
         )
@@ -333,6 +334,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
         logger.logInfo(
           'remoteMethodProxy remote static 2',
           {
+            'url': remote.url,
             'remote args': remoteArgs
           }
         )
