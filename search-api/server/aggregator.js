@@ -1,6 +1,6 @@
 //const { getLogger } = require('@user-office-software/duo-logger');
 //const logger = getLogger();
-const {logger} = require('@user-office-software/duo-logger');
+const { logger } = require('@user-office-software/duo-logger');
 
 module.exports = Aggregator;
 
@@ -39,7 +39,7 @@ function Sort(mergedResults, sortByScore) {
 
 function Aggregator(results, method, callback, limit = -1, sortByScore = true) {
   logger.logDebug('aggregator Aggregator 1', {
-    'number of results': results.length,
+    number_of_results: results.length,
     method: method,
   });
 
@@ -83,7 +83,10 @@ function Aggregator(results, method, callback, limit = -1, sortByScore = true) {
     }
     callback(null, parameters);
   } else {
-    logger.logDebug('aggregator Aggregator other 1', {});
+    logger.logDebug('aggregator Aggregator 3', {
+      number_of_data_providers: results.length,
+      method: method,
+    });
     let mergedResults = new Array();
     for (let result of results) {
       if (result != null) {
@@ -94,12 +97,13 @@ function Aggregator(results, method, callback, limit = -1, sortByScore = true) {
           if (result.length > 0) {
             logger.logInfo('aggregator Aggregator results loop 2', {
               provider: result[0].provider,
+              number_of_results: result.length
             });
             mergedResults = mergedResults.concat(result);
           }
         } else {
           logger.logInfo('aggregator Aggregator results loop 3', {
-            'number of results': 1,
+            number_of_results: 1,
             provider: result.provider,
           });
           mergedResults = mergedResults.concat(result);
@@ -117,9 +121,11 @@ function Aggregator(results, method, callback, limit = -1, sortByScore = true) {
       }
     } else {
       logger.logDebug('aggregator Aggregator other 2', {
-        'number of total results': mergedResults.length,
-        'sort by score': sortByScore,
+        number_of_data_providers: results.length,
+        number_of_total_results: mergedResults.length,
+        sort_by_score: sortByScore,
         limit: limit,
+        method: method,
       });
       mergedResults = Sort(mergedResults, sortByScore);
       callback(null, limit > 0 ? mergedResults.slice(0, limit) : mergedResults);
