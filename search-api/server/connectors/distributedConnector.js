@@ -378,7 +378,7 @@ function createProxyMethod(Model, remotes, remoteMethod) {
       logger.logDebug(
         'remoteMethodProxy all settled',
         {
-          'number of results': results.length,
+          number_of_data_providers: results.length,
         }
       );
       Aggregator(
