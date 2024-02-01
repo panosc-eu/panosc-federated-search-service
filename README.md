@@ -157,7 +157,7 @@ docker-image-relesase.sh <your-docker-account>
 Assuming that you are currently in branch develop and on commit 5d5f42af1ca6816a13b6db60b4778388dc4bf431, a docker image with tag *develop-5d5f42af1ca6816a13b6db60b4778388dc4bf431* will be pushed on the docker repository.
 
 ### Docker images repository
-The current repository for the docker images is: ****https://github.com/panosc-eu/panosc-federated-search-service/releases**.
+The current repository for the docker images is: ***https://github.com/panosc-eu/panosc-federated-search-service/pkgs/container/panosc-federated-search-service***.
 
 
 ## How to test the PaNOSC federated search api
