@@ -14,65 +14,94 @@ Latest test environment:
 - docker compose = v1.29.2
 
 ## Production environment
-As November 2021, the production environment is accessible at the following URL:
-- https://federated.scicat.ess.eu/
-   - Explorer interface: https://federated.scicat.ess.eu/explorer/
-   - Api : https://federated.scicat.ess.eu/api/
+As of February 2024, the production environment is accessible at the following URL:
+- https://federated.panosc.ess.eu/
+   - Explorer interface: https://federated.panosc.ess.eu/explorer/
+   - Api : https://federated.panosc.ess.eu/api/
 
 ## Configuration
 PaNOSC federated search can be configured by setting environmental variables.
 Following is the list of the available configurations, their meaning and default value:
 -   API_VERSION  
     API version used in the running instance.   
-    Default: unknown  
+    _Default_: unknown  
 
 -   DOCKER_IMAGE_VERSION  
     tag of the docker image used for the running instance, if any.  
-    Default: unknown  
+    _Default_: unknown  
  
 -   HOSTING_FACILITY  
     name of the hosting facility for the running instance.  
-    Default: unknown  
+    _Default_: unknown  
 
 -   ENVIRONMENT   
     string identifying the environemnt where the instance is running.  
-    Example: develop, test, or production.  
-    Default: unknown  
+    _Example_: develop, test, or production.  
+    _Default_: unknown  
 
 -   PROVIDERS  
-    comma separated list of facilities PaNOSC local search apis that are used when running queries.  
-    Example: "https://icatplus.esrf.fr/api,https://scicat.ess.eu/panosc-api,https://fairdata.ill.fr/fairdata/api"  
-    Default: unknown  
+    comma separated list of facilities PaNOSC local search apis that are used when running queries. 
+    Please check the current version of .env file for the update list of data providers
+    _Example_: "https://icatplus.esrf.fr/api,https://scicat.ess.eu/panosc-api,https://fairdata.ill.fr/fairdata/api"  
+    _Default_: unknown  
 
 -   DEFAULT_LIMIT  
     number of results returned from each facility if no limit is provided in filter.  
-    Example: if set to 10. When no limit is provided in filter, the federated search will return 10 results from each facility.  
-    Default: 100  
+    _Example_: if set to 10. When no limit is provided in filter, the federated search will return 10 results from each facility.  
+    _Default_: 100  
 
 -   PROVIDER_TIMEOUT  
     timeout in ms when waiting for results from each individual data provider.  
-    Default: 5000  
+    _Default_: 5000  
+
+-   LOGGING
+    where to send the logs.
+    _Default_: console.
+    _Accepted values_: console, graylog
+
+-   LOGGING_SERVER
+    If LOGGING is set to _graylog_, the ip address or hostname of the graylog server
+    _Default_: none
+
+-   LOGGIN_PORT
+    If LOGGING is set to _graylog_, the port where graylog is listening on the server specified in LOGGING_SERVER
+    _Default_: none
+
+-   LOGGING_ENVIRONMENT
+    If LOGGING is set to _graylog_, the environment string that will be used in graylog
+    _Default_: none
+
+-   LOGGING_SERVICE
+    if LOGGING is set to _graylog_, the services string that will be used in graylog
+    _Default_: none
   
    
 All of this values can be verified by connecting to the base URL of the PaNOSC federated search instance that we would like to check.
 For example, the ESS PaNOSC federated search instance returns the following values:
 
 ```
-> curl https://federated.scicat.ess.eu/
+> curl https://federated.panosc.ess.eu/
 {
-   "uptime_seconds"       : 426443.573,
-   "uptime"               : "118:27:23",
-   "api_version"          : "v2.2",
-   "docker_image_version" : "v2.2",
-   "hosting_facility"     : "ESS",
-   "environment"          : "production",
-   "default_limit"        : 100,
-   "provider_timeout_ms"  : 1000,
-   "data_providers" : [
-      "https://icatplus.esrf.fr/api",
-      "https://scicat.ess.eu/panosc-api",
-      "https://fairdata.ill.fr/fairdata/api"
-   ]
+   "uptime_seconds"        : 4403250.860398721,
+   "uptime"                : "1223:07:30",
+   "api_version"           : "v2.21",
+   "docker_image_version"  : "v2.21",
+   "hosting_facility"      : "ESS",
+   "environment"           : "production",
+   "data_providers"        : [
+     "https://searchapi.maxiv.lu.se/api",
+     "https://icatplus.esrf.fr/api",
+     "https://search.panosc.ess.eu/api",
+     "https://dacat.psi.ch/panosc-api",
+     "https://data.ceric-eric.eu/search-api",
+     "https://in.xfel.eu/metadata/api/panosc/v1",
+     "https://fairdata.ill.fr/fairdata/api",
+     "https://data.cells.es/iws/panosc/search-api"
+   ],
+   "provider_timeout_ms"   : 10000,
+   "default_limit"         : 100,
+   "filter_invalid_scores" : true,
+   "logging"               : "GRAYLOG"
 }
 ```
 
@@ -128,7 +157,7 @@ docker-image-relesase.sh <your-docker-account>
 Assuming that you are currently in branch develop and on commit 5d5f42af1ca6816a13b6db60b4778388dc4bf431, a docker image with tag *develop-5d5f42af1ca6816a13b6db60b4778388dc4bf431* will be pushed on the docker repository.
 
 ### Docker images repository
-The current repository for the docker images is: ***nitrosx71/panosc-federated-search*** and can be found at this [URL](https://hub.docker.com/repository/docker/nitrosx71/panosc-federated-search/general)
+The current repository for the docker images is: ****https://github.com/panosc-eu/panosc-federated-search-service/releases**.
 
 
 ## How to test the PaNOSC federated search api
@@ -200,7 +229,3 @@ Please follow the steps listed below and, on step 2, select which configuration 
      curl -X GET --header "Accept: application/json" "http://localhost:3000/api/Documents?filter=%7B%22limit%22%3A10%2C%22query%22%3A%22temperature%20beam%22%7D"
      ```
 
-## Customization
-
-- [Base adapter](./search-api-data-provider/common/customAdapter.js) for customization.
-- [After hook](./search-api-data-provider/common/mixins/score.js) for custom rank computing. The computed score will be used by [aggregator](./search-api/server/aggregator.js) (higher score is better).
