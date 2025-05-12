@@ -7,13 +7,12 @@ echo ""
 
 #
 # check that we got two arguments in input
-if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
+if [ "$#" -ne 1 ]; then
     echo "Usage ${SCRIPT_NAME} <account> (<tag>)"
     echo ""
     echo " prepare a docker image and push it to the dockerhub repo in the repository <account>/panosc-federated-search"
     echo ""
     echo " arguments:"
-    echo " - account = account on docker hub"
     echo " - tag     = git tag or commit we would like to use to create the image"
     echo "             if not specified the tag ysed will be the branch name followed by the latest commit, separted by dash"
     echo "             Example:"
@@ -23,8 +22,7 @@ if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
 fi
 
 # extract input argument
-account=$1
-gitTag=$2
+gitTag=$1
 
 # code repository and branch
 # these are not needed anymore as we assume that this script will only be run from within the repo
@@ -37,7 +35,7 @@ gitTag=$2
 # - develop
 
 # docker repository
-dockerRepo=${account}/panosc-federated-search
+dockerRepo=ghcr.io/panosc-eu/panosc-federated-search-service
 
 # check if the user provided a tag or not
 if [ "-${gitTag}-" == "--" ]; then
@@ -53,13 +51,17 @@ fi
 # docker image tag
 dockerTag="${gitTag}"
 dockerImage="${dockerRepo}:${dockerTag}"
+dockerImageGitTag="${dockerImage}"
+dockerImageStableTag="${dockerRepo}:stable"
 
 #
 # gives some feedback to the user
-echo "Account          : ${account}"
-echo "Git commit tag   : ${gitTag}"
-echo "Docker image tag : ${dockerTag}"
-echo "Docker image     : ${dockerImage}"
+echo "Account                  : ${account}"
+echo "Git commit tag           : ${gitTag}"
+echo "Docker tag               : ${dockerTag}"
+echo "Docker image             : ${dockerImage}"
+echo "Docker image git tag     : ${dockerImage}"
+echo "Docker image stable tage : ${dockerImage}"
 echo ""
 
 #
@@ -67,11 +69,11 @@ echo ""
 # if it is already present, remove old image
 if [[ "$(docker images -q ${dockerImage} 2> /dev/null)" != "" ]]; then
     echo "Image already present. Removing it and recreating it"
-    docker rmi ${dockerImage}
+    docker rmi ${dockerImageGitTag}
     echo ""
 fi
 echo "Creating image"
-docker build -t ${dockerImage} -f ./search-api/Dockerfile ./search-api
+docker build -t ${dockerImageGitTag} -t ${dockerImageStableTag} -f ./search-api/Dockerfile ./search-api
 echo ""
 
 # push image on docker hub repository

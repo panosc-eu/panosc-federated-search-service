@@ -22,7 +22,11 @@ COPY . .
 # RUN npm run build
 
 # Bind to all network interfaces so that it can be mapped to the host OS
-ENV HOST=0.0.0.0 PORT=3000
+ENV HOST=0.0.0.0
+ENV PORT=3000
+ENV PROVIDERS=$PROVIDERS
+ENV API_VERSION=$API_VERSION
+ENV DOCKER_IMAGE_VERSION=$DOCKER_IMAGE_VERSION
 
 EXPOSE ${PORT}
 CMD [ "node", "." ]
