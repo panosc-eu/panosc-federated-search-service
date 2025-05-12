@@ -9,6 +9,10 @@ RUN mkdir -p /home/node/app
 
 WORKDIR /home/node/app
 
+ARG PROVIDERS="unknown"
+ARG API_VERSION="unknown"
+ARG DOCKER_IMAGE_VERSION="unknown"
+
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
@@ -22,7 +26,11 @@ COPY . .
 # RUN npm run build
 
 # Bind to all network interfaces so that it can be mapped to the host OS
-ENV HOST=0.0.0.0 PORT=3000
+ENV HOST=0.0.0.0
+ENV PORT=3000
+ENV PROVIDERS=$PROVIDERS
+ENV API_VERSION=$API_VERSION
+ENV DOCKER_IMAGE_VERSION=$DOCKER_IMAGE_VERSION
 
 EXPOSE ${PORT}
 CMD [ "node", "." ]
