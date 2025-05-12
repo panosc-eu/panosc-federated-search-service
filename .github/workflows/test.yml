@@ -15,12 +15,12 @@ jobs:
       
     steps:  
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
         
       - name: Build the docker-compose stack
         run: |
           cd test
-          docker-compose -f docker-compose-local-data-provider-test.ci.yaml up -d
+          docker compose -f docker-compose-local-data-provider-test.ci.yaml up -d
           
       - name: Wait until service ready
         run: sleep 30s
