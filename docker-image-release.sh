@@ -47,21 +47,26 @@ else
     git checkout ${gitTag}
 fi
 
+typeTag="latest"
+if [ ${gitTag} == "z*" ]; then
+    typeTag="stable"
+fi
+
 
 # docker image tag
 dockerTag="${gitTag}"
 dockerImage="${dockerRepo}:${dockerTag}"
-dockerImageGitTag="${dockerImage}"
-dockerImageStableTag="${dockerRepo}:stable"
+dockerImageVersionTag="${dockerImage}"
+dockerImageTypeTag="${dockerRepo}:${typeTag}"
 
 #
 # gives some feedback to the user
-echo "Account                  : ${account}"
-echo "Git commit tag           : ${gitTag}"
-echo "Docker tag               : ${dockerTag}"
-echo "Docker image             : ${dockerImage}"
-echo "Docker image git tag     : ${dockerImage}"
-echo "Docker image stable tage : ${dockerImage}"
+echo "Account               : ${account}"
+echo "Git commit tag        : ${gitTag}"
+echo "Docker tag            : ${dockerTag}"
+echo "Docker image          : ${dockerImage}"
+echo "Docker image git tag  : ${dockerImageVersionTag}"
+echo "Docker image type tag : ${dockerImageTypeTag}"
 echo ""
 
 #
@@ -73,7 +78,7 @@ if [[ "$(docker images -q ${dockerImage} 2> /dev/null)" != "" ]]; then
     echo ""
 fi
 echo "Creating image"
-docker build -t ${dockerImageGitTag} -t ${dockerImageStableTag} -f ./search-api/Dockerfile ./search-api
+docker build -t ${dockerImageVersionTag} -t ${dockerImageTypeTag} --build-arg PROVIDERS=${PROVIDERS} --build-arg API_VERSION=${gitTag} --build-arg DOCKER_IMAGE_VERSION=${gitTag} -f ./search-api/Dockerfile ./search-api
 echo ""
 
 # push image on docker hub repository

@@ -9,6 +9,10 @@ RUN mkdir -p /home/node/app
 
 WORKDIR /home/node/app
 
+ARG PROVIDERS="unknown"
+ARG API_VERSION="unknown"
+ARG DOCKER_IMAGE_VERSION="unknown"
+
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
